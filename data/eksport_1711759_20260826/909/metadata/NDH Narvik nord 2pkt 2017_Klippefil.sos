@@ -1,0 +1,42 @@
+.HODE
+! lagret av exp2sosi versjon 3.2 rev. 2015-09-02
+..TEGNSETT UTF-8
+..TRANSPAR
+...KOORDSYS 23
+...ENHET 0.01
+...ORIGO-NØ 7586864 606673
+..OMRÅDE
+...MIN-NØ 7586863 606672
+...MAX-NØ 7587092 606974
+..SOSI-VERSJON  4.1
+..SOSI-NIVÅ     4		!Flateformat er 2
+..EIER "Geovekst"
+!
+!
+!---------------------------------------------------
+!Egenskaper som ikke er definert i global sosidef.txt eller [DEF HODE]
+.DEF
+..SHAPE_LENG D19.2
+.DEF
+..SHAPE_AREA D19.2
+!---------------------------------------------------
+!
+!
+! Shape fil nr. 1:  E:\gamp_workspace\RUN8504270_workspace\temp\scratch\shp_konvert_m9sjmk.shp
+.KURVE 1:
+..OBJTYPE SOSI_Objekt
+..NØ
+46 29991 ...KP 1
+..NØ
+46 15
+22698 15
+22698 29991
+46 29991 ...KP 1
+.FLATE 2:
+..OBJTYPE Kartblad
+..SHAPE_LENG 1052.55
+..SHAPE_AREA 67901.32
+..REF :1
+..NØ
+11372 15003
+.SLUTT
