@@ -144,8 +144,8 @@ void Renderer::initVulkan()
     // should be done more cleanly from the Engine class
     GameObject* temp = new GameObject();
     temp->mTransform = new Transform{glm::vec3(5.0f, 0.0f, 5.f)};
-	temp->mTransform->scale = glm::vec3(0.3f, 0.3f, 0.3f);
-    temp->mMesh = 5; //not Monkey anymore
+    temp->mTransform->scale = glm::vec3(0.001f, 0.001f, 0.001f);
+    temp->mMesh = 6; //not Monkey anymore
     temp->mTexture = 3;
     temp->mCollider = new Collider(0.2f, temp);// A collider for our player
     mGameObjects.push_back(temp);

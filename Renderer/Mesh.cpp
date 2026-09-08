@@ -236,6 +236,11 @@ void Mesh::makefromTXT()
 
     LOGP("  Opening text. %i lines.", index);
 
+    mVertices.resize(index);
+
+    float offset_x = 0.f;
+    float offset_y = 0.f;
+    float offset_z = 0.f;
 
     unsigned int temp_index = 0;
     while(std::getline(fileIn,oneLine)){
@@ -245,13 +250,22 @@ void Mesh::makefromTXT()
         sStream >> y;
         sStream >> z;
 
-        tempVertices.push_back(glm::vec3{std::stof(x), std::stof(y), std::stof(z)});
+        if(temp_index == 0){
+            offset_x = std::stoi(x);
+            offset_y = std::stoi(y);
+            offset_z = std::stoi(z);
+        }
 
 
-        Vertex tempVertex{tempVertices[index],tempNormals ,tempUVs};
-        mVertices.push_back(tempVertex);
+        tempVertices.push_back(glm::vec3{std::stof(x) - offset_x, std::stof(y) - offset_y, std::stof(z) - offset_z});
+
+
+
+        mVertices.push_back({tempVertices[temp_index],tempNormals ,tempUVs});
+
 
         mIndices.push_back(temp_index++);
+
     }
 
     fileIn.close();
