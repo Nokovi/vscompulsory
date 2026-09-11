@@ -143,9 +143,9 @@ void Renderer::initVulkan()
     // hacky way to add game objects
     // should be done more cleanly from the Engine class
     GameObject* temp = new GameObject();
-    temp->mTransform = new Transform{glm::vec3(5.0f, 0.0f, 5.f)};
-    temp->mTransform->scale = glm::vec3(0.001f, 0.001f, 0.001f);
-    temp->mMesh = 6; //not Monkey anymore
+    temp->mTransform = new Transform{glm::vec3(0.f, 0.0f, 0.f)};
+    temp->mTransform->scale = glm::vec3(1.f, 1.f, 1.f);
+    temp->mMesh = 1; //not Monkey anymore
     temp->mTexture = 3;
     temp->mCollider = new Collider(0.2f, temp);// A collider for our player
     mGameObjects.push_back(temp);
@@ -154,7 +154,8 @@ void Renderer::initVulkan()
 
     temp = new GameObject();
     temp->mTransform = new Transform{ glm::vec3(0.0f, 0.0f, 0.f) };
-    temp->mMesh = 3; //Terrain
+    temp->mTransform->scale = glm::vec3(0.1f, 0.1f, 0.1f);
+    temp->mMesh = 6; //Terrain
     temp->mTexture = 5;
     mGameObjects.push_back(temp);
 

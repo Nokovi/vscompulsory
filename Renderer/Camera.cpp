@@ -45,4 +45,7 @@ void Camera::update()
 
     // move camera along worldUp vector
     mPosition += mUp * mCameraMovement.y;
+
+
+    //temp posiition fix
 }

@@ -50,5 +50,5 @@ void main()
     vec3 result = (ambient + diffuse + specular) * textureColor.rgb;
 
     // Output the final color (convert to vec4) = vec4(result, textureColor.a);
-    outColor = vec4(1,0,0,0);
+    outColor = vec4( 0.02f * fragPosition.y ,0,0,0);
 }

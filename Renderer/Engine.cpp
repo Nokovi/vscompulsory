@@ -72,14 +72,6 @@ void Engine::update()
 
 
 
-    float rotX = control.MOUSEY / 10.f;
-    float rotY = -control.MOUSEX / 10.f;
-
-    playerRotation.y = rotY + 180.f;
-
-
-    mPlayer->mTransform->rotation = playerRotation;
-
 
 
     glm::vec3 playerPos = mPlayer->mTransform->position;
@@ -111,23 +103,6 @@ void Engine::update()
 	}
 
     */
-
-    //for third person camera boom.
-    glm::vec3 cameraOffset(0.f, 2.f, 5.f);
-
-    float rad = M_PI / 180.f;
-
-    glm::mat3x3 rotation = {std::cos(-rotY*rad), 0.f, std::sin(-rotY*rad),
-                            0.f, 1.f, 0.f,
-                            -std::sin(-rotY*rad), 0, std::cos(-rotY*rad) };
-    cameraOffset = rotation * cameraOffset;
-    glm::vec3 cameraBase = playerPos + cameraOffset;
-    mRenderer->mCamera->mPosition = cameraBase;
-
-    //camera angle.
-    mRenderer->mCamera->mPitch = -10.0f;
-    mRenderer->mCamera->mYaw = rotY;
-
 
     //collider
 
@@ -163,22 +138,6 @@ void Engine::update()
     //Update player position.
 
 
-    if(control.W){
-        playerPos.x -= 0.02f * sin(rotY*rad);
-        playerPos.z -= 0.02f * cos(rotY*rad);
-    }
-    if(control.S){
-        playerPos.x += 0.02f * sin(rotY*rad);
-        playerPos.z += 0.02f * cos(rotY*rad);
-    }
-    if(control.A){
-        playerPos.x -= 0.02f * sin(rotY*rad+90*rad);
-        playerPos.z -= 0.02f * cos(rotY*rad+90*rad);
-    }
-    if(control.D){
-        playerPos.x += 0.02f * sin(rotY*rad+90*rad);
-        playerPos.z += 0.02f * cos(rotY*rad+90*rad);
-    }
 
     if (mTerrain)
     {

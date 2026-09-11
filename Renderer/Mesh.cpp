@@ -224,6 +224,7 @@ void Mesh::makefromTXT()
 
 
     std::string oneLine;
+    std::string oneWord;
     std::string x;
     std::string y;
     std::string z;
@@ -245,26 +246,38 @@ void Mesh::makefromTXT()
     unsigned int temp_index = 0;
     while(std::getline(fileIn,oneLine)){
         std::stringstream sStream;
+
         sStream << oneLine;
+        oneWord = "";
         sStream >> x;
+
+        float xf = std::stof(x, nullptr);
+
         sStream >> y;
+
+        float yf = std::stof(y, nullptr);
+
         sStream >> z;
 
+        float zf = std::stof(z, nullptr);
+
         if(temp_index == 0){
-            offset_x = std::stoi(x);
-            offset_y = std::stoi(y);
-            offset_z = std::stoi(z);
+            offset_x = xf;
+            offset_y = yf;
         }
 
 
-        tempVertices.push_back(glm::vec3{std::stof(x) - offset_x, std::stof(y) - offset_y, std::stof(z) - offset_z});
 
 
+        tempVertices.push_back(glm::vec3{xf - offset_x, zf, yf - offset_y});
+
+        if (temp_index % 100000 == 1){
+            LOGP("point text. %i lines. %f, %f, %f %s", temp_index, xf, yf, zf, oneWord.c_str());
+        }
 
         mVertices.push_back({tempVertices[temp_index],tempNormals ,tempUVs});
 
-
-        mIndices.push_back(temp_index++);
+        temp_index++;
 
     }
 

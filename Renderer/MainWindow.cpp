@@ -150,16 +150,16 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
 
-    if (mInput.RMB)
-    {
-        //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mMouseXlast = event->pos().x() - mMouseXlast;
-        mMouseYlast = event->pos().y() - mMouseYlast;
+    // if (mInput.RMB)
+    // {
+    //     //Using mMouseXYlast as deltaXY so we don't need extra variables
+    //     mMouseXlast = event->pos().x() - mMouseXlast;
+    //     mMouseYlast = event->pos().y() - mMouseYlast;
 
-        mCamera->mYaw += mMouseXlast * mCameraRotateSpeed;
-        mCamera->mPitch += mMouseYlast * mCameraRotateSpeed;
+    //     mCamera->mYaw += mMouseXlast * mCameraRotateSpeed;
+    //     mCamera->mPitch += mMouseYlast * mCameraRotateSpeed;
 
-    }
+    // }
     mMouseXlast = event->globalPosition().x() - (mVulkanWindow->width()/2.f + this->pos().x() + mVulkanWindow->position().x());
     mMouseYlast = event->globalPosition().y()  - (mVulkanWindow->height()/2.f + this->pos().y() +  mVulkanWindow->position().y());
 
@@ -204,10 +204,10 @@ void MainWindow::handleInput()
 
     mCamera->resetMovement();  //reset last frame movement
 
-    if (mInput.RMB)
-    {
-        if (mInput.W)
+    if (mInput.W){
             mCamera->mCameraMovement.z += mCameraSpeed; //forward
+        LOGH("W pressed.");
+    }
         if (mInput.S)
             mCamera->mCameraMovement.z -= mCameraSpeed; //backward
         if (mInput.D)
@@ -216,30 +216,11 @@ void MainWindow::handleInput()
             mCamera->mCameraMovement.x -= mCameraSpeed; //left
         if (mInput.Q){
             mCamera->mCameraMovement.y -= mCameraSpeed; //down
-        mCamera->mRoll += 3.f;
         }
         if (mInput.E){
             mCamera->mCameraMovement.y += mCameraSpeed; //up
-            mCamera->mRoll -= 3.f;
         }
 
-    }
-    else
-    {
-
-        float moveSpeed = 0.01f;
-
-        //we are NOT doing this here for my sanity implementing directional movement.
-
-        // if (mInput.W)
-        //     Engine::getInstance()->mPlayer->mTransform->position.z -= moveSpeed;//forward
-        // if (mInput.S)
-        //     Engine::getInstance()->mPlayer->mTransform->position.z += moveSpeed;//backward
-        // if (mInput.D)
-        //     Engine::getInstance()->mPlayer->mTransform->position.x += moveSpeed;//right
-        // if (mInput.A)
-        //     Engine::getInstance()->mPlayer->mTransform->position.x -= moveSpeed;//left
-	}
     mCamera->update();
     statusBar()->showMessage(QString("Camera position ") + "x: " + QString::number(mCamera->mPosition.x) + ", " +
                              "y: " + QString::number(mCamera->mPosition.y) + ", " +

@@ -15,14 +15,14 @@ public:
     void update();
 
     // Initial values - will quicly be overwritten
-    glm::vec3 mPosition {7.0f, 10.0f, 18.0f};
+    glm::vec3 mPosition {35.0f, 15.0f, 25.0f};
     glm::vec3 mForward {0, 0, -1};      // Forward vector local to the camera
     glm::vec3 mRight {1, 0, 0};         // Right vector local to the camera
     glm::vec3 mUp {0, 1, 0};            // Using +Y up
 
     // These values holds absolute values:
-    float mPitch {-40.f};               // The pitch of the camera - in Euler angle
-    float mYaw {0.f};                   // The yaw of the camera - in Euler angle
+    float mPitch {-30.f};               // The pitch of the camera - in Euler angle
+    float mYaw {45.f};                   // The yaw of the camera - in Euler angle
     float mRoll {0.f}; //I want roll.
 
 
