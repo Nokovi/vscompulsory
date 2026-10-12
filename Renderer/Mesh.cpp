@@ -416,7 +416,7 @@ void Mesh::makefromTXT()
 
     }
 
-    TriangulateFromPoints(6.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
+    TriangulateFromPoints(3.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
 
     fileIn.close();
 
