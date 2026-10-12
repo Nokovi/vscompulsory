@@ -47,6 +47,7 @@ public:
     const std::vector<uint32_t>& indices() const { return mIndices; };
 
     void makefromTXT();
+    void TriangulateFromPoints(float GridResolution);
 protected:
     // Initialize Vulkan handles to VK_NULL_HANDLE to avoid destroying uninitialized values
     VkBuffer mVertexBuffer{ VK_NULL_HANDLE };
