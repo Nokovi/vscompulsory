@@ -203,11 +203,29 @@ void Mesh::TriangulateFromPoints(float GridResolution){
     }
 
     mVertices.clear();
-    mIndices.clear();
 
+
+    //Push vertex data.
     for(glm::vec3 v : tempVertices){
         mVertices.push_back({v, tempNormal, tempUV});
     }
+
+    //Create index data.
+    int tempIndex = 0;
+     for(int i = 0; i < ix-1; i++){
+         for(int j = 0; j < iy-1; j++){
+
+             mIndices.push_back(tempIndex);
+             mIndices.push_back(tempIndex+1);
+             mIndices.push_back(tempIndex+iy);
+
+             mIndices.push_back(tempIndex+1);
+             mIndices.push_back(tempIndex+iy+1);
+             mIndices.push_back(tempIndex+iy);
+
+             tempIndex++;
+         }
+     }
 }
 
 void Mesh::makeObj()
@@ -398,7 +416,7 @@ void Mesh::makefromTXT()
 
     }
 
-    TriangulateFromPoints(3.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
+    TriangulateFromPoints(6.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
 
     fileIn.close();
 
