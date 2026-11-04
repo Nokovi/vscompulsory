@@ -48,6 +48,11 @@ public:
 
     void makefromTXT();
     void TriangulateFromPoints(float GridResolution);
+
+    float heightAtPoint(const glm::vec2& point);
+    glm::vec3 barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
+                                     glm::vec2 testPoint);
+
 protected:
     // Initialize Vulkan handles to VK_NULL_HANDLE to avoid destroying uninitialized values
     VkBuffer mVertexBuffer{ VK_NULL_HANDLE };

@@ -94,6 +94,8 @@ void Mesh::makeQuad()
     };
 }
 
+int verytemporaryindex = 0;
+
 void Mesh::TriangulateFromPoints(float GridResolution){
     double xMin, xMax;
     double yMin, yMax;
@@ -183,8 +185,8 @@ void Mesh::TriangulateFromPoints(float GridResolution){
     float cumulative_y = 0;
     int sum = 0;
 
-    for(int i = 0; i < ix; i++){
-        for(int j = 0; j < iy; j++){
+    for(int i = 0; i < ix -1; i++){
+        for(int j = 0; j < iy -1; j++){
             cumulative_y = 0;
             sum = 0;
             for(glm::vec3 V : VertexGroupings[i][j]){
@@ -204,6 +206,9 @@ void Mesh::TriangulateFromPoints(float GridResolution){
 
     mVertices.clear();
 
+
+    tempNormal = glm::vec3(verytemporaryindex % 2, 0, 0);
+    verytemporaryindex++;
 
     //Push vertex data.
     for(glm::vec3 v : tempVertices){
@@ -416,11 +421,94 @@ void Mesh::makefromTXT()
 
     }
 
-    TriangulateFromPoints(3.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
+    TriangulateFromPoints(10.f); //Point resolution here (meters between points). please do not go beneath 3 unless you want the process to take several minutes.
 
     fileIn.close();
 
     LOGP("text file %s made into a mesh!", mFileName.c_str());
 }
 
+float Mesh::heightAtPoint(const glm::vec2& point)
+{
+    if (mVertices.empty())
+        return 0.0f;
 
+    // Compute which square the world point lies in. Use floor to handle positions correctly.
+    int xSquare = std::floor(point.x);
+    int zSquare = std::floor(point.y);
+
+    // Compute verts per axis from vertex count
+    int vertsPerAxis = static_cast<int>(std::sqrt(mVertices.size()));
+    if (vertsPerAxis < 2)
+        return 0.0f;
+
+    // If point is outside the grid, return 0
+    if (xSquare < 0 || xSquare >= vertsPerAxis - 1 || zSquare < 0 || zSquare >= vertsPerAxis - 1)
+        return 0.0f;
+
+    // Indices of the square's vertices
+    uint32_t topLeft = zSquare * vertsPerAxis + xSquare;
+    uint32_t topRight = topLeft + 1;
+    uint32_t bottomLeft = (zSquare + 1) * vertsPerAxis + xSquare;
+    uint32_t bottomRight = bottomLeft + 1;
+
+    // Compute local coordinates inside the square (origin at top-left corner of the square)
+    glm::vec2 squareOrigin = glm::vec2(xSquare, zSquare);
+    glm::vec2 localPoint = point - squareOrigin;
+
+    // Build triangle vertex positions in the same local coordinate space (x,z)
+    glm::vec2 pTL = glm::vec2(mVertices[topLeft].position.x, mVertices[topLeft].position.z) - squareOrigin;
+    glm::vec2 pBL = glm::vec2(mVertices[bottomLeft].position.x, mVertices[bottomLeft].position.z) - squareOrigin;
+    glm::vec2 pTR = glm::vec2(mVertices[topRight].position.x, mVertices[topRight].position.z) - squareOrigin;
+    glm::vec2 pBR = glm::vec2(mVertices[bottomRight].position.x, mVertices[bottomRight].position.z) - squareOrigin;
+
+    // First triangle: topLeft, bottomLeft, topRight
+    glm::vec3 baryc = barycentricCoordinates(pTL, pBL, pTR, localPoint);
+    if (baryc.x >= 0.0f && baryc.y >= 0.0f && baryc.z >= 0.0f)
+    {
+        return baryc.x * mVertices[topLeft].position.y + baryc.y * mVertices[bottomLeft].position.y + baryc.z * mVertices[topRight].position.y;
+    }
+
+    // Second triangle: bottomLeft, bottomRight, topRight
+    baryc = barycentricCoordinates(pBL, pBR, pTR, localPoint);
+    if (baryc.x >= 0.0f && baryc.y >= 0.0f && baryc.z >= 0.0f)
+    {
+        return baryc.x * mVertices[bottomLeft].position.y + baryc.y * mVertices[bottomRight].position.y + baryc.z * mVertices[topRight].position.y;
+    }
+
+    // Not inside either triangle (shouldn't happen if point inside grid), return 0
+    return 0.0f;
+}
+
+glm::vec3 Mesh::barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
+                                          glm::vec2 testPoint)
+{
+    // The testPoint in is the point we want to find the barycentric coordinates of,
+    // with respect to the triangle defined by p1, p2, and p3.
+
+    // Compute the area of the whole triangle (p1, p2, p3) using the cross product method
+    glm::vec2 p12 = p2 - p1;
+    glm::vec2 p13 = p3 - p1;
+    glm::vec3 n = glm::cross(glm::vec3(p12, 0.0f), glm::vec3(p13, 0.0f)); // p12 ^ p13;
+    float areal_123 = n.z; //  Need to keep the sign here - lenght gives absolute value - n.length(); // double area
+
+    glm::vec3 baryc; // for return. Remember
+
+    // Compute the area of the sub-triangles formed by the testPoint and each edge of the triangle,
+    // u
+    glm::vec2 p = p2 - testPoint; // *this;
+    glm::vec2 q = p3 - testPoint; // *this;
+    n = glm::cross(glm::vec3(p, 0.0f), glm::vec3(q, 0.0f)); //p ^ q;
+    baryc.x = n.z / areal_123;
+    // v
+    p = p3 - testPoint; // *this;
+    q = p1 - testPoint; //*this;
+    n = glm::cross(glm::vec3(p, 0.0f), glm::vec3(q, 0.0f)); // p ^ q;
+    baryc.y = n.z / areal_123;
+    // w
+    p = p1 - testPoint; //*this;
+    q = p2 - testPoint; //*this;
+    n = glm::cross(glm::vec3(p, 0.0f), glm::vec3(q, 0.0f));  //p ^ q;
+    baryc.z = n.z / areal_123;
+    return baryc;
+}

@@ -11,8 +11,9 @@
 #include "Logger.h"
 #include <cstdlib>
 
-Engine::Engine()
-{}
+Engine::Engine() : mLogger(Logger::getInstance())
+{
+}
 
 void Engine::loadScene()
 {
@@ -73,8 +74,40 @@ void Engine::update()
 
 
 
-
     glm::vec3 playerPos = mPlayer->mTransform->position;
+
+    mPlayer->speed[1] -= 0.01f;
+
+    playerPos.x += mPlayer->speed[0];
+    playerPos.y += mPlayer->speed[1];
+    playerPos.z += mPlayer->speed[2];
+
+
+    if(mTerrain){
+        if(playerPos.y > mTerrain->heightAtPoint({playerPos.x, playerPos.z})+ 0.5f){
+            mPlayer->speed[1] -= 0.01f;
+
+            playerPos.x += mPlayer->speed[0];
+            playerPos.y += mPlayer->speed[1];
+            playerPos.z += mPlayer->speed[2];
+
+
+            LOGP("%f,", mPlayer->mTransform->position.y);
+            GameObject* temp;
+
+
+                temp = new GameObject();
+                temp->mTransform = new Transform{ playerPos };
+                temp->mTransform->scale = glm::vec3(0.3f, 0.3f, 0.3f);
+                temp->mMesh = 2; //Monkey
+                temp->mTexture = 0;
+                temp->mCollider = new Collider(0.2f, temp);// A collider for our NPC
+                mRenderer->mGameObjects.push_back(temp);
+                mCollectibles.push_back(mRenderer->mGameObjects.back()); //This is our NPC!
+
+
+        }
+    }
 
 
     // 2. update game objects
@@ -139,13 +172,7 @@ void Engine::update()
 
 
 
-    if (mTerrain)
-    {
-        playerPos.y = mTerrain->heightAtPoint(glm::vec2(playerPos.x, playerPos.z)) + 0.3f; // add 0.3 to put the player slightly above the terrain
-        //npcPos.y = mTerrain->heightAtPoint(glm::vec2(npcPos.x, npcPos.z)) + 0.3f; // add 0.3 to put the player slightly above the terrain
 
-
-    }
 
     mPlayer->mTransform->position = playerPos;
 

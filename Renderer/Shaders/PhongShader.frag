@@ -25,6 +25,25 @@ layout(push_constant) uniform PushConstants {
     vec4 specularParams;      //strenght, exponent, 0, 0
 } push;
 
+
+
+vec3 randColor(int x){
+
+    float r = 0.f;
+    float g = 0.f;
+    float b = 0.f;
+
+
+    if(x % 4 == 1) r = 1;
+    if(x % 4 == 2) g = 1;
+    if(x % 4 == 3) b = 1;
+    if(x % 4 == 0) { b = 1;  r = 1;}
+
+    return vec3(r, g, b);
+}
+
+
+
 // Since the Positions and Color come in as vec4 because of the alignment
 // we use swizzling to get only what we need (.xyz -components)
 void main()
@@ -50,5 +69,5 @@ void main()
     vec3 result = (ambient + diffuse + specular) * textureColor.rgb;
 
     // Output the final color (convert to vec4) = vec4(result, textureColor.a);
-    outColor = vec4( 0.02f * fragPosition.y ,0,0,0);
+    outColor = vec4(fragPosition.x / 100, fragPosition.y /100, fragPosition.z /100 ,0);
 }

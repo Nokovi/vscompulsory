@@ -57,7 +57,7 @@ private:
     Renderer* mRenderer{ nullptr };
     MainWindow* mMainWindow { nullptr };
 
-
+    Logger& mLogger;
 
     std::vector<class Mesh*> mMeshes;
     std::vector<class Texture*> mTextures;
