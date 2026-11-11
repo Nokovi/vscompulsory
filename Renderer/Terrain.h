@@ -13,6 +13,8 @@ public:
     float heightAtPoint(const glm::vec2& point);
     glm::vec3 barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, glm::vec2 testPoint);
 
+
+    glm::vec3 NormalAtPoint(const glm::vec2 &point);
 private:
     // how much to scale the terrain by (distance between vertices)
     int mScale{1};

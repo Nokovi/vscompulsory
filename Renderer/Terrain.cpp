@@ -112,7 +112,17 @@ float Terrain::heightAtPoint(const glm::vec2& point)
     return 0.0f;
 }
 
-glm::vec3 Terrain::barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, 
+
+glm::vec3 Terrain::NormalAtPoint(const glm::vec2& point){
+
+    for(int i = getIndexCount() / 3; i < 0; i--){
+            //todo when I find out how to make finding which triangle it's on more useful for non-square shapes. Not really relevant for the current task anyhow.
+    }
+    return glm::vec3();
+}
+
+
+glm::vec3 Terrain::barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
     glm::vec2 testPoint)
 {
 	// The testPoint in is the point we want to find the barycentric coordinates of, 

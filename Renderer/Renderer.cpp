@@ -126,8 +126,8 @@ void Renderer::initVulkan()
     // We make the meshes after Vulkan is set up,
     // Then we can create the vertex and index buffers needed
 
-    mMeshes.push_back(new Mesh(this, Mesh::MeshType::TRIANGLE));
-    mMeshes.push_back(new Mesh(this, Mesh::MeshType::OBJ, "Suzanne.obj"));
+    mMeshes.push_back(new Mesh(this, Mesh::MeshType::TCustom));
+    mMeshes.push_back(new Mesh(this, Mesh::MeshType::OBJ, "ball.obj"));
     mMeshes.push_back(new Mesh(this, Mesh::MeshType::QUAD));
 	mMeshes.push_back(new Terrain(this, 16, 1));
     mEngine->mTerrain = static_cast<Terrain*>(mMeshes.back());
@@ -138,27 +138,33 @@ void Renderer::initVulkan()
     mMeshes.push_back(new Mesh(this, Mesh::MeshType::OBJ, "charac.obj")); // player (5)
 
 
-    mMeshes.push_back(new Mesh(this, Mesh::MeshType::VertexData, "filler.txt"));
+    //mMeshes.push_back(new Mesh(this, Mesh::MeshType::VertexData, "filler.txt"));
+
+    mMeshes.push_back(new Mesh(this, Mesh::MeshType::TCustom, "filler"));
+
 
     // hacky way to add game objects
     // should be done more cleanly from the Engine class
     GameObject* temp = new GameObject();
-    temp->mTransform = new Transform{glm::vec3(10.f, 80.0f, 10.f)};
+    temp->mTransform = new Transform{glm::vec3(10.f, 20.0f, 10.f)};
     temp->mTransform->scale = glm::vec3(1.f, 1.f, 1.f);
     temp->mMesh = 1; //not Monkey anymore
     temp->mTexture = 3;
     temp->mCollider = new Collider(0.2f, temp);// A collider for our player
     mGameObjects.push_back(temp);
-    mEngine->mPlayer = mGameObjects.back(); //This is our player!
+    mEngine->mPlayer = mGameObjects.back(); //This is our ball now!
 
 
     temp = new GameObject();
     temp->mTransform = new Transform{ glm::vec3(0.0f, 0.0f, 0.f) };
-    temp->mTransform->scale = glm::vec3(0.1f, 0.1f, 0.1f);
-    temp->mMesh = 6; //Terrain
+    temp->mTransform->scale = glm::vec3(1.f, 1.f, 1.f);
+    temp->mMesh = 0; //Terrain is 6 when active
     temp->mTexture = 5;
     mGameObjects.push_back(temp);
-    mEngine->mTerrain = (Terrain*)temp;
+    //mEngine->mTerrain = (Terrain*)temp;
+
+
+
 
     /*for(int i = 0; i < 20; i++){
         temp = new GameObject();

@@ -6,6 +6,7 @@ class npc : GameObject
 {
 public:
     npc();
+
 };
 
 #endif // NPC_H

@@ -28,6 +28,10 @@ Mesh::Mesh(Renderer* render, MeshType meshTypeIn, std::string fileNameIn) : mRen
     case MeshType::VertexData :
         makefromTXT();
         break;
+    case MeshType::TCustom :
+        //Temporary and hard-coded triangle for testing purposes.
+        makeTriangle_Custom();
+        break;
     default:
         makeTriangle();
     }
@@ -77,7 +81,23 @@ void Mesh::makeTriangle()
         {{0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
         {{0.0f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.0f}}
     };
+    mIndices = {
+        0, 1, 2
+    };
 }
+
+void Mesh::makeTriangle_Custom()
+{
+    mVertices = {
+        {{0.f, 0.f, 0.f}, {0.0f, 0.0f, 1.0f}, {0.f, 1.f}},
+        {{30.f, 0.f, 0.f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{0.0f, 5.0f, 30.0f}, {0.0f, 0.0f, 1.0f}, {0.5f, 0.0f}}
+    };
+    mIndices = {
+        0, 1, 2, 2, 1, 0
+    };
+}
+
 
 void Mesh::makeQuad()
 {

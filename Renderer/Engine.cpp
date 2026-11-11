@@ -2,7 +2,7 @@
 #include "MainWindow.h"
 #include "Mesh.h"
 #include "Texture.h"
-#include "Camera.h"
+
 #include "GameObject.h"
 #include "Transform.h"
 #include "Terrain.h"
@@ -38,6 +38,7 @@ void Engine::loadScene()
     }
 
 
+
 }
 
 void Engine::readTexture(std::string textureName)
@@ -50,17 +51,27 @@ void Engine::readTexture(std::string textureName)
 }
 
 //lazy global declarations. who cares.
-int engineloopi = 0; //simple timer.
+
+bool bBallInAir = true;
+
+//Triangle position. Mainly for testing.
+glm::vec2 P1 = {0.0f, 0.0f}; float P1h = 0.f;
+glm::vec2 P2 = {30.0f, 0.0f}; float P2h = 0.f;
+glm::vec2 P3 = {0.0f, 30.0f}; float P3h = 5.f;
+
+float BallRadius = 1.f;
+float BallMass = 1.f;
+glm::vec3 BallVelocity{0.f,0.f,0.f};
+
+
+float DeltaTime = 0.01f; //I'll calculate DeltaTime from process time at a later date.
+//Right now each frame simulates 1/50th of a second.
 
 // Main Game Loop function
 // called every frame
 void Engine::update()
 {
-    engineloopi++;
-
-    //we are implementing this super lazily.
-
-
+    LOGP("Hello World");
 
     // 1. get input from mouse and keyboard
     mMainWindow->handleInput();
@@ -70,44 +81,66 @@ void Engine::update()
     glm::vec3 playerRotation = mPlayer->mTransform->rotation;
 
     Input control = *mInput;
-
-
-
-
     glm::vec3 playerPos = mPlayer->mTransform->position;
 
-    mPlayer->speed[1] -= 0.01f;
+    glm::vec3 Bary = Mesh::barycentricCoordinates(P1, P2, P3, glm::vec2(playerPos.x, playerPos.z));
 
-    playerPos.x += mPlayer->speed[0];
-    playerPos.y += mPlayer->speed[1];
-    playerPos.z += mPlayer->speed[2];
-
-
-    if(mTerrain){
-        if(playerPos.y > mTerrain->heightAtPoint({playerPos.x, playerPos.z})+ 0.5f){
-            mPlayer->speed[1] -= 0.01f;
-
-            playerPos.x += mPlayer->speed[0];
-            playerPos.y += mPlayer->speed[1];
-            playerPos.z += mPlayer->speed[2];
+    if(Bary.x >= 0 && Bary.x <= 1 &&
+        Bary.y >= 0 && Bary.x <= 1 &&
+        Bary.z >= 0 && Bary.z <= 1){
 
 
-            LOGP("%f,", mPlayer->mTransform->position.y);
-            GameObject* temp;
+        glm::vec3 p12 = {P1 - P2, P1h - P2h};
+        glm::vec3 p13 = {P1 - P3, P1h - P3h};
+        glm::vec3 n = glm::cross(glm::vec3(p12), glm::vec3(p13)); // p12 ^ p13;
+
+        n = glm::normalize(n);
+
+        glm::vec3 F = glm::vec3(n.x * n.z * 9.81, (pow(n.z, 2.f) - 1.f)*9.81, n.y * n.z * 9.81);
+
+        float height = 0.0f;
+        height += P1h * Bary.x;
+        height += P2h * Bary.y;
+        height += P3h * Bary.z;
 
 
-                temp = new GameObject();
-                temp->mTransform = new Transform{ playerPos };
-                temp->mTransform->scale = glm::vec3(0.3f, 0.3f, 0.3f);
-                temp->mMesh = 2; //Monkey
-                temp->mTexture = 0;
-                temp->mCollider = new Collider(0.2f, temp);// A collider for our NPC
-                mRenderer->mGameObjects.push_back(temp);
-                mCollectibles.push_back(mRenderer->mGameObjects.back()); //This is our NPC!
+        if(bBallInAir == true){
 
+            if(playerPos.y - BallRadius <= height){
+                playerPos.y = height + BallRadius;
+                BallVelocity = glm::vec3{0.f,0.f,0.f}; // temp. Make better till next time.
+                bBallInAir = false;
+
+                LOGP("Normals: %f, %f, %f.", n.x, n.y, n.z);
+
+
+
+
+            } else {
+                F = {0.f, -9.81, 0.f};
+            }
+        }
+
+        if (bBallInAir == false){
 
         }
+        playerPos += glm::vec3(BallVelocity.x * DeltaTime, BallVelocity.y * DeltaTime, BallVelocity.z * DeltaTime) +
+                     glm::vec3(F.x * 0.5 * pow(DeltaTime, 2.f),  F.z * 0.5 * pow(DeltaTime, 2.f),F.y * 0.5 * pow(DeltaTime, 2.f)); // 9.14, swizzled.
+
+        BallVelocity += glm::vec3(F.x * DeltaTime, F.y * DeltaTime, F.z * DeltaTime);
+
+    } else {
+        bBallInAir = true;
+        glm::vec3 F{0.f, -9.81f, 0.f};
+
+        playerPos += glm::vec3(BallVelocity.x * DeltaTime, BallVelocity.y * DeltaTime, BallVelocity.z * DeltaTime) +
+                     glm::vec3(F.x * 0.5 * pow(DeltaTime, 2.f),  F.z * 0.5 * pow(DeltaTime, 2.f),F.y * 0.5 * pow(DeltaTime, 2.f)); // 9.14, swizzled.
+
+        BallVelocity += glm::vec3(F.x * DeltaTime, F.y * DeltaTime, F.z * DeltaTime);
     }
+
+
+
 
 
     // 2. update game objects
