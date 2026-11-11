@@ -532,3 +532,52 @@ glm::vec3 Mesh::barycentricCoordinates(const glm::vec2& p1, const glm::vec2& p2,
     baryc.z = n.z / areal_123;
     return baryc;
 }
+
+int findKnotInterval(float x, int n, std::vector<int> t) {
+    int my = n-1; // index of last control point
+    while (x < t[my])
+        my--;
+    return my;
+}
+
+
+class QuadraticBSpline {
+public:
+
+
+    glm::vec3 ControlPoints[4][4];
+    std::vector<int> u = {0,0,0,1,2,2,2};
+    std::vector<int> v = {0,0,0,1,1,1};
+
+
+    //just a slope for now.
+    QuadraticBSpline(){
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                ControlPoints[i][j] = { i, j, i };
+            }
+        }
+
+    }
+
+
+    int m = 0;
+    int n = 16;
+
+    float CalculateValue(float x, float y){
+
+        float f;
+        for(int i = 0; i < m - 1; i++){
+            for(int j = 0; j < n - 1; i++){
+
+            }
+        }
+
+        return f;
+    }
+
+};
+
+void Mesh::QuadraticBSpline(){
+
+}

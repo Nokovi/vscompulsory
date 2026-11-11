@@ -54,6 +54,7 @@ public:
                                      glm::vec2 testPoint);
 
     void makeTriangle_Custom();
+    void QuadraticBSpline();
 protected:
     // Initialize Vulkan handles to VK_NULL_HANDLE to avoid destroying uninitialized values
     VkBuffer mVertexBuffer{ VK_NULL_HANDLE };

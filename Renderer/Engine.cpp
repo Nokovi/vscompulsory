@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include <cstdlib>
 
+
 Engine::Engine() : mLogger(Logger::getInstance())
 {
 }
@@ -64,14 +65,13 @@ float BallMass = 1.f;
 glm::vec3 BallVelocity{0.f,0.f,0.f};
 
 
-float DeltaTime = 0.01f; //I'll calculate DeltaTime from process time at a later date.
-//Right now each frame simulates 1/50th of a second.
+float DeltaTime = 0.001f; //I'll calculate DeltaTime from process time at a later date.
+//Right now each frame simulates 1/1000th of a second.
 
 // Main Game Loop function
 // called every frame
 void Engine::update()
 {
-    LOGP("Hello World");
 
     // 1. get input from mouse and keyboard
     mMainWindow->handleInput();
